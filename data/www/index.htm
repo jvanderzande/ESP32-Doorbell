@@ -96,7 +96,7 @@
                         ntransform = "rotate(%Rotation%deg)";
                     if ("%Rotation%" == "270")
                         ntransform = "rotate(%Rotation%deg) translate(-12%%, -16%%)";
-                    // Check if Style is still correct 
+                    // Check if Style is still correct
                     if (elmnt.style.transform != ntransform) {
                         elmnt.style.transform = ntransform;
                         console.log("CSS applied to IFRAME!");
@@ -107,6 +107,17 @@
                         if (loopcnt > 20) {
                             clearInterval(checkStyle);
                             console.log("Exit loop!");
+                            observer = new MutationObserver((changes) => {
+                                changes.forEach(change => {
+                                console.log("IMG Error ...restart in 10");
+                                window.setTimeout(function () {
+                                    console.log("Iframe refresh now.");
+                                    //document.getElementById('indexframe').contentWindow.location.reload();
+                                    frameLoad('/stream');
+                                }, 10000);
+                                });
+                            });
+                            observer.observe(elmnt, { attributes: true });
                         }
                     }
                 }, 10);
@@ -114,6 +125,5 @@
                 console.log("IMG not there yet.");
             }
         }, 10);
-        console.log("Loop done.");
     }
 </script>

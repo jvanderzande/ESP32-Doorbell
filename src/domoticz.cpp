@@ -126,12 +126,13 @@ void Button_Check() {
     // Check if button is activated
     if (digitalRead(BUTTON_GPIO_NUM) == buttonPushedState && !ButtonProcessActive) {
         ButtonProcessActive = true;
+        // short sleep to avoid crash of Stream, which will stop after ButtonProcessActive is true.
+        delay(100);
         AddLogMessageI(F("Button Pressed.\n"));
         // Perform Domoticz action when button is pressed
         Button_Pressed("On");
         AddLogMessageI(F("LED"));
         Flash_done = 1;
-        // Switch led on before Sending command to Domoticz
         LedToggle();
         Flash_timer = millis();
         return;

@@ -19,6 +19,7 @@
 // Define private used funcs
 bool GetJsonField_UpdateCam(sensor_t *s, DynamicJsonDocument doc, char *variable);
 void ESP_Standard_Settings();
+extern bool ButtonProcessActive; // used in domoticz.cpp
 
 typedef struct
 {
@@ -144,6 +145,10 @@ class AsyncJpegStreamResponse : public AsyncAbstractResponse {
         return true;
     }
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override {
+        // Stop Stream when Button is pressed.
+        if (ButtonProcessActive) {
+            return 0;
+        }
         size_t ret = _content(buf, maxLen, _index);
         if (ret != RESPONSE_TRY_AGAIN) {
             _index += ret;
@@ -155,7 +160,7 @@ class AsyncJpegStreamResponse : public AsyncAbstractResponse {
             if (index && _frame.fb) {
                 long end = millis();
                 int fp = (end - lastAsyncRequest);
-                log_d("Size: %uKB, Time: %ums (%ifps)\n", _jpg_buf_len / 1024, fp, 1000 / fp);
+                //log_d("Size: %uKB, Time: %ums (%ifps)\n", _jpg_buf_len / 1024, fp, 1000 / fp);
                 lastAsyncRequest = end;
                 if (_frame.fb->format != PIXFORMAT_JPEG) {
                     free(_jpg_buf);
