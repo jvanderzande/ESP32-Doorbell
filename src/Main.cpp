@@ -9,6 +9,7 @@
 #include "Main.h"
 #include "WebServer.h"
 #include "domoticz.h"
+#include "telegram.h"
 #include "setup.h"
 #include "cam.h"
 
@@ -42,6 +43,10 @@ char ServerPass[16] = "";                    //MQTT password
 char DomoticzIDX[5] = "999";                 //Domoticz IDX nummer welke geschakeld moet worden.
 char MQTTsubscriber[20] = "ESP32CAM/Input";  //MQTT MQTTsubscriber name
 char MQTTtopicin[20] = "domoticz/in";        //MQTT Topic name
+char TeleProtocol[4] = "no";                 //Define use telegram
+char TelegramBot[50] = "";                   //Telegram bot id
+char TelegramChat[15] = "";                  //Telegram chat ID
+char TelegramCapt[24] = "";                  //Telegram caption text
 char Motion[4] = "no";                       //Define use motion input
 char MotionIDX[5] = "";                      //Domoticz Motion IDX
 uint MotionDisable = 20000;                  //Disable motion detection in sec
@@ -110,7 +115,7 @@ bool WifiOK = false;          // WiFi status
 bool mqtt_initdone = false;   // MQTT status
 bool reboot = false;          // Pending reboot status
 long rebootdelay = 0;         // used to calculate the delay
-
+bool SendTelegramCapture;    	// Used to stop tstreaming when active
 void setup() {
     //EEPROM.begin(200);
     Serial.begin(115200);
@@ -198,6 +203,9 @@ void setup() {
 
     // Make ESP-CAM "known" in the network under it's ESP_NAME
     start_ssdp_service();
+
+    // Set bot token
+    Telegram_update_bottoken();
     AddLogMessageI(F("ESP Doorbell initialized\n"));
 }
 

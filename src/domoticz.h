@@ -17,3 +17,6 @@ bool Mqtt_Loop();
 void Mqtt_messageReceived(String &topic, String &payload);
 
 String process_messageReceived(String payload);
+
+extern uint Flash_done;
+extern long Flash_timer;

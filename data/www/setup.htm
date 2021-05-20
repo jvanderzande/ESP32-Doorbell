@@ -136,6 +136,27 @@
                 <td>&nbsp;&nbsp;MQTT TopicIn:</td>
                 <td><input name="MQTTtopicin" maxlength="20" size="20" value="%MQTTtopicin%"></td>
             </tr>
+            <tr>
+                <td>Send Telegram</td>
+                <td>
+                    <select id="TeleProtocol" name="TeleProtocol" onchange="ChangeTeleProtocol()">
+                        <option value="no">no</option>
+                        <option value="yes">yes</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="tele1">
+                <td>&nbsp;&nbsp;Bot Token:</td>
+                <td><input name="TelegramBot" maxlength="50" size="50" value="%TelegramBot%"></td>
+            </tr>
+            <tr id="tele2">
+                <td>&nbsp;&nbsp;Chat ID:</td>
+                <td><input name="TelegramChat" maxlength="15" size="15" value="%TelegramChat%"></td>
+            </tr>
+            <tr id="tele3">
+                <td>&nbsp;&nbsp;Text (max 24char):</td>
+                <td><input name="TelegramCapt" maxlength="24" size="24" value="%TelegramCapt%"></td>
+            </tr>
             <tr id="motion0">
                 <td>Motion input active</td>
                 <td>
@@ -166,7 +187,6 @@
                         onClick="window.location.href='/configupdrequest';" value="load config" />&nbsp;&nbsp;
                 </td>
             </tr>
-            <tr>
                 <td><br><br></td>
             </tr>
             <tr>
@@ -189,6 +209,7 @@
     var esp_board = "%esp_board%";
     var IPsetting = "%IPsetting%";
     var SendProtocol = "%SendProtocol%";
+    var TeleProtocol = "%TeleProtocol%";
     var Motion = "%Motion%";
     var Rotation = "%Rotation%";
 
@@ -201,11 +222,17 @@
         esp_board = document.getElementById('esp_board').value;
         SetFields();
     }
+
     function ChangeProtocol() {
         SendProtocol = document.getElementById('Send_Protocol').value;
         SetFields();
     }
-    
+
+    function ChangeTeleProtocol() {
+        TeleProtocol = document.getElementById('TeleProtocol').value;
+        SetFields();
+    }
+
     function ChangeMotion() {
         Motion = document.getElementById('Motion').value;
         SetFields();
@@ -307,6 +334,19 @@
                 document.getElementById('motion0').style.display = '';
             else if (esp_board == "ESP_EYE")
                 document.getElementById('motion0').style.display = 'none';
+        }
+
+        if (TeleProtocol == "no") {
+            document.getElementById('TeleProtocol').getElementsByTagName('option')[0].selected = 'selected';
+            document.getElementById('tele1').style.display = 'none';
+            document.getElementById('tele2').style.display = 'none';
+            document.getElementById('tele3').style.display = 'none';
+        }
+        else if (TeleProtocol == "yes") {
+            document.getElementById('TeleProtocol').getElementsByTagName('option')[1].selected = 'selected';
+            document.getElementById('tele1').style.display = '';
+            document.getElementById('tele2').style.display = '';
+            document.getElementById('tele3').style.display = '';
         }
 
         if (Motion == "no") {

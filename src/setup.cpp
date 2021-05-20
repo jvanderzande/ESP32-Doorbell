@@ -106,6 +106,10 @@ bool Restore_ESPConfig_from_SPIFFS() {
     GetJsonField("MotionDisable", doc, &MotionDisable);
     GetJsonField("MQTTsubscriber", doc, MQTTsubscriber);
     GetJsonField("MQTTtopicin", doc, MQTTtopicin);
+    GetJsonField("TeleProtocol", doc, TeleProtocol);
+    GetJsonField("TelegramBot", doc, TelegramBot);
+    GetJsonField("TelegramChat", doc, TelegramChat);   
+    GetJsonField("TelegramCapt", doc, TelegramCapt);   
     GetJsonField("Flashcount", doc, &Flashcount);
     GetJsonField("Flashduration", doc, &Flashduration);
     GetJsonField("Rotation", doc, Rotation);
@@ -138,6 +142,10 @@ void Save_NewESPConfig_to_SPIFFS(AsyncWebServerRequest *request) {
     p += sprintf(p, "\"MotionDisable\":\"%s\",", urlDecode(request->arg("MotionDisable")).c_str());
     p += sprintf(p, "\"MQTTsubscriber\":\"%s\",", urlDecode(request->arg("MQTTsubscriber")).c_str());
     p += sprintf(p, "\"MQTTtopicin\":\"%s\",", urlDecode(request->arg("MQTTtopicin")).c_str());
+    p += sprintf(p, "\"TeleProtocol\":\"%s\",", urlDecode(request->arg("TeleProtocol")).c_str());
+    p += sprintf(p, "\"TelegramBot\":\"%s\",", urlDecode(request->arg("TelegramBot")).c_str());
+    p += sprintf(p, "\"TelegramChat\":\"%s\",", urlDecode(request->arg("TelegramChat")).c_str());
+    p += sprintf(p, "\"TelegramCapt\":\"%s\",", urlDecode(request->arg("TelegramCapt")).c_str());
     p += sprintf(p, "\"Flashcount\":\"%s\",", urlDecode(request->arg("Flashcount")).c_str());
     p += sprintf(p, "\"Flashduration\":\"%s\",", urlDecode(request->arg("Flashduration")).c_str());
     p += sprintf(p, "\"Rotation\":\"%s\",", urlDecode(request->arg("Rotation")).c_str());
@@ -220,6 +228,14 @@ String TranslateTemplateVars(const String &var) {
         return MQTTsubscriber;
     if (var == "MQTTtopicin")
         return MQTTtopicin;
+    if (var == "TeleProtocol")
+        return TeleProtocol;
+    if (var == "TelegramBot")
+        return TelegramBot;
+    if (var == "TelegramChat")
+        return TelegramChat;
+    if (var == "TelegramCapt")
+        return TelegramCapt;
     if (var == "Flashcount")
         return String(Flashcount);
     if (var == "Flashduration")

@@ -7,6 +7,7 @@
 #include "domoticz.h"
 #include "Main.h"
 #include "WebServer.h"
+#include "telegram.h"
 #include <base64.h>
 #include <MQTT.h>
 #include "ArduinoJson.h"
@@ -21,7 +22,7 @@ int ledState = ON_LED_STATE;       //the current state of LED High/Low
 bool ledon_bydefault = true;       //is the default state for the LED ON? True/False
 
 uint MotionDisable_done = 0;       //How long is motion disabled
-long Motion_timer = 0;              //Motion timer
+long Motion_timer = 0;             //Motion timer
 bool MotionProcessActive = false;  //Motion Active process started
 
 //-4 : MQTT_CONNECTION_TIMEOUT - the server didn't respond within the keepalive time
@@ -99,7 +100,7 @@ String process_messageReceived(String payload) {
     JsonObject root = doc.as<JsonObject>();
     for (JsonPair kv : root) {
         const char *key = kv.key().c_str();
-        const char *value = kv.value().as<char *>();
+        const char *value = kv.value().as<const char *>();
         Serial.printf("key:%s  value:%s", key, value);
         if (strcasecmp(key, "led") == 0) {
             AddLogMessageI(String("Switch LED to ") + String(value) + "\n");
@@ -130,10 +131,11 @@ void Button_Check() {
         delay(100);
         AddLogMessageI(F("Button Pressed.\n"));
         // Perform Domoticz action when button is pressed
-        Button_Pressed("On");
-        AddLogMessageI(F("LED"));
         Flash_done = 1;
         LedToggle();
+        Button_Pressed("On");
+        TelegramSendPicture();
+        AddLogMessageI(F("LED"));
         Flash_timer = millis();
         return;
     }
@@ -158,7 +160,7 @@ void Button_Check() {
 
 // Function to process when button is pressed
 void Button_Pressed(const char *State) {
-    AddLogMessageI("Button: " + String(State) + "\n");
+    AddLogMessageD("Button: " + String(State) + "\n");
     if (!strcmp(SendProtocol, "json")) {
         Domoticz_JSON_Switch(DomoticzIDX, State);
     } else if (!strcmp(SendProtocol, "mqtt")) {

@@ -146,9 +146,15 @@ class AsyncJpegStreamResponse : public AsyncAbstractResponse {
     }
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override {
         // Stop Stream when Button is pressed.
-        if (ButtonProcessActive) {
+        //if (ButtonProcessActive) {
+        //    return 0;
+        //}
+        // Stop streaming when when Telegram needs to be send to avoid a crash
+        // logic in index.htm will restart the stream after a defined delay.
+        if (SendTelegramCapture) {
             return 0;
         }
+
         size_t ret = _content(buf, maxLen, _index);
         if (ret != RESPONSE_TRY_AGAIN) {
             _index += ret;
@@ -158,10 +164,12 @@ class AsyncJpegStreamResponse : public AsyncAbstractResponse {
     size_t _content(uint8_t *buffer, size_t maxLen, size_t index) {
         if (!_frame.fb || _frame.index == _jpg_buf_len) {
             if (index && _frame.fb) {
+                /* used while debugging the code
                 long end = millis();
                 int fp = (end - lastAsyncRequest);
-                //log_d("Size: %uKB, Time: %ums (%ifps)\n", _jpg_buf_len / 1024, fp, 1000 / fp);
+                log_d("Size: %uKB, Time: %ums (%ifps)\n", _jpg_buf_len / 1024, fp, 1000 / fp);
                 lastAsyncRequest = end;
+                */
                 if (_frame.fb->format != PIXFORMAT_JPEG) {
                     free(_jpg_buf);
                 }

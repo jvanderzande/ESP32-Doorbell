@@ -531,6 +531,7 @@ void AddLogMessage(String msg, String Module, String Function, String Severity, 
     if (msg.indexOf("\n") > 0)
         LogMessage_NewLine = true;
     // Also log to SPIFFS
+    /*
     File hlogfile = SPIFFS.open("/cam.log", FILE_APPEND);
     if (!hlogfile) {
         log_e("Error opening cam.log");
@@ -549,6 +550,7 @@ void AddLogMessage(String msg, String Module, String Function, String Severity, 
         }
         hlogfile.close();
     }
+    */
     // Add message to queue when level is requested
     if ((Severity == "E" && webloglevel > 0) ||
         (Severity == "W" && webloglevel > 1) ||
