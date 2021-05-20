@@ -271,24 +271,23 @@ void SetLedtoDefault(bool warn) {
 
 // Check the motion state and process the switch action
 void Motion_Check() {
-    // Check if motion is activated
-    if (digitalRead(MOTION_GPIO_NUM) == MotionActiveState && !MotionProcessActive) {
+    // Check if motion is activated and reset its timer
+    if (digitalRead(MOTION_GPIO_NUM) == MotionActiveState) {
         MotionProcessActive = true;
-        MotionDisable_done = 1;
-        Motion_Active("On");
+        // set detecition timer of last detection
+        Motion_timer = millis();
+        // only switch Domoticz on when not yet On
+        if (!MotionProcessActive)
+            Motion_Active("On");
+
         return;
     }
-    // perform and switch Off
+    // Check for timer to since last detection and switch Off
     if (MotionProcessActive) {
-        if (MotionDisable_done > (MotionDisable / 10)) {
+        if (Motion_timer + MotionDisable < millis()) {
             AddLogMessageD("Motion timer done.\n");
             Motion_Active("Off");
             MotionProcessActive = false;
-        } else {
-            if ((MotionDisable / 1000) < millis()) {
-                Motion_timer = millis();
-                MotionDisable_done++;
-            }
         }
     }
 }

@@ -49,7 +49,7 @@ char TelegramChat[15] = "";                  //Telegram chat ID
 char TelegramCapt[24] = "";                  //Telegram caption text
 char Motion[4] = "no";                       //Define use motion input
 char MotionIDX[5] = "";                      //Domoticz Motion IDX
-uint MotionDisable = 20000;                  //Disable motion detection in sec
+uint MotionDisable = 20000;                  //Disable motion detection in msec
 
 //**************************************************************************************************************************************************
 //**                                                              Setting PUSH button                                                             **
