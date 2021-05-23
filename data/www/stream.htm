@@ -1,0 +1,76 @@
+<script type="text/javascript" src="js/jquery.min.js"></script>
+
+<html>
+
+<head>
+    <title>%esp_name% stream</title>
+    <link href='css/main.css' rel='stylesheet' type='text/css' />
+</head>
+<body>
+    <div>
+    <iframe class="iframe" id="ImageFrame" src="/streamjpg" ></iframe>
+    </div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        frameLoad('/streamjpg');
+    });
+
+    function frameLoad(Page) {
+        var iframe = document.getElementById('ImageFrame');
+        // remove current <img> element to ensure it works when already on a page with an <img>
+        var elmnt = iframe.contentWindow.document.getElementsByTagName("IMG")[0];
+        if (elmnt != undefined) {
+            elmnt.remove();
+        }
+        // Load new iframe page with Captue or Stream
+        document.getElementById('ImageFrame').setAttribute('src', Page);
+        // Apply CSS to rotate the Image
+        var checkExist = setInterval(function () {
+            var elmnt = iframe.contentWindow.document.getElementsByTagName("IMG")[0];
+            if (elmnt != undefined && elmnt.style != undefined) {
+                clearInterval(checkExist);
+                console.log("IMG there, go into a loop to set IMG else firefox won't work.");
+                var loopcnt = 0;
+                var checkStyle = setInterval(function () {
+                    var elmnt = iframe.contentWindow.document.getElementsByTagName("IMG")[0];
+                    clearInterval(checkExist);
+                    var ntransform = "";
+                    if ("%Rotation%" == "90")
+                        ntransform = "rotate(%Rotation%deg) translate(14%%, 15%%)";
+                    if ("%Rotation%" == "180")
+                        ntransform = "rotate(%Rotation%deg)";
+                    if ("%Rotation%" == "270")
+                        ntransform = "rotate(%Rotation%deg) translate(-12%%, -16%%)";
+                    // Check if Style is still correct
+                    if (elmnt.style.transform != ntransform) {
+                        elmnt.style.transform = ntransform;
+                        console.log("CSS applied to IFRAME!");
+                        loopcnt = 0;
+                    } else {
+                        loopcnt++;
+                        console.log("loopcnt=" + loopcnt + "  " + elmnt.style.transform);
+                        if (loopcnt > 20) {
+                            clearInterval(checkStyle);
+                            console.log("Exit loop!");
+                            observer = new MutationObserver((changes) => {
+                                changes.forEach(change => {
+                                console.log("IMG Error ...restart in 10");
+                                window.setTimeout(function () {
+                                    console.log("Iframe refresh now.");
+                                    frameLoad('/streamjpg');
+                                }, 5000);
+                                });
+                            });
+                            observer.observe(elmnt, { attributes: true });
+                        }
+                    }
+                }, 10);
+            } else {
+                console.log("IMG not there yet.");
+            }
+        }, 10);
+    }
+    // start
+</script>

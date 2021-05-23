@@ -115,6 +115,8 @@ void WebServerInit(AsyncWebServer *webserver) {
     // Define all weboptions with TEMPLATE variables or specific functions
     webserver->on("/", HTTP_GET, ESPShowPagewithTemplate);
     webserver->on("/index.html", HTTP_GET, ESPShowPagewithTemplate);
+    webserver->on("/stream", HTTP_GET, ESPShowPagewithTemplate);
+    webserver->on("/stream.html", HTTP_GET, ESPShowPagewithTemplate);
     webserver->on("/info", HTTP_GET, ESPShowPagewithTemplate);
     webserver->on("/logger", HTTP_GET, ESPShowPagewithTemplate);
     webserver->on("/setup", HTTP_GET, ESPShowPagewithTemplate);
@@ -139,7 +141,7 @@ void WebServerInit(AsyncWebServer *webserver) {
 
     // Cam links
     webserver->on("/capture", HTTP_GET, sendJpg);
-    webserver->on("/stream", HTTP_GET, streamJpg);
+    webserver->on("/streamjpg", HTTP_GET, streamJpg);
 
     // serving other static information from SPIFFS
     webserver->serveStatic("/", SPIFFS, "/www/");
@@ -178,6 +180,8 @@ void ESPShowPagewithTemplate(AsyncWebServerRequest *request) {
 
     if (page == "/" || page == "/index.html") {
         page = "/www/index.htm";
+    } else if (page == "/stream" || page == "/stream.html" || page == "//stream" || page == "//stream.html") {
+        page = "/www/stream.htm";
     } else if (page == "//capture" || page == "//capture.htm") {
         msg += "\" -> ";
         AddLogMessageI(msg);

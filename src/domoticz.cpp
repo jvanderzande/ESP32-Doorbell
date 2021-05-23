@@ -276,7 +276,7 @@ void Motion_Check() {
         MotionProcessActive = true;
         // set detecition timer of last detection
         Motion_timer = millis();
-        // only switch Domoticz on when not yet On
+        // only switch Domoticz On when not yet On
         if (!MotionProcessActive)
             Motion_Active("On");
 
